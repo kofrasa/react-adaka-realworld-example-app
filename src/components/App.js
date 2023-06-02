@@ -1,10 +1,10 @@
 import React, { lazy, Suspense, useEffect, memo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 
 import Home from '../components/Home';
 import { appLoad, clearRedirect } from '../reducers/common';
 import Header from './Header';
+import { useSelector } from '../store';
 
 const Article = lazy(() =>
   import(
@@ -33,20 +33,21 @@ const SettingsScreen = lazy(() =>
 );
 
 function App() {
-  const dispatch = useDispatch();
-  const redirectTo = useSelector((state) => state.common.redirectTo);
-  const appLoaded = useSelector((state) => state.common.appLoaded);
+  const { redirectTo, appLoaded } = useSelector({
+    redirectTo: 1,
+    appLoaded: 1,
+  });
 
   useEffect(() => {
     if (redirectTo) {
       // dispatch(push(redirectTo));
-      dispatch(clearRedirect());
+      clearRedirect();
     }
   }, [redirectTo]);
 
   useEffect(() => {
     const token = window.localStorage.getItem('jwt');
-    dispatch(appLoad(token));
+    appLoad(token);
   }, []);
 
   if (appLoaded) {

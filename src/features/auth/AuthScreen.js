@@ -1,10 +1,10 @@
 import React, { memo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
 
 import ListErrors from '../../components/ListErrors';
-import { login, register, selectErrors, selectIsLoading } from './authSlice';
+import { selectIsLoading, selectErrors, register, login } from './authSlice';
+import { useSelector } from '../../store';
 
 /**
  * Auth screen component
@@ -16,9 +16,12 @@ function AuthScreen({ isRegisterScreen }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const dispatch = useDispatch();
-  const errors = useSelector(selectErrors);
-  const inProgress = useSelector(selectIsLoading);
+
+  const { errors, isLoading: inProgress } = useSelector({
+    ...selectErrors,
+    ...selectIsLoading,
+  });
+
   const navigate = useNavigate();
   /**
    * @type {React.ChangeEventHandler<HTMLInputElement>}
@@ -46,14 +49,12 @@ function AuthScreen({ isRegisterScreen }) {
    */
   const authenticateUser = (event) => {
     event.preventDefault();
-    dispatch(
-      isRegisterScreen
-        ? register({ username, email, password })
-        : login({ email, password })
-    );
+
     if (isRegisterScreen) {
+      register({ username, email, password });
       navigate('/login');
     } else {
+      login({ email, password });
       navigate('/');
     }
   };

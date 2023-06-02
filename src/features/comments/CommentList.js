@@ -1,5 +1,4 @@
 import React, { memo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 
 import {
@@ -9,6 +8,7 @@ import {
   selectIsAuthor,
   selectIsLoading,
 } from './commentsSlice';
+import { useSelector } from '../../store';
 
 /**
  * Delete a comment
@@ -19,15 +19,14 @@ import {
  * <DeleteCommentButton commentId={1} />
  */
 function DeleteCommentButton({ commentId }) {
-  const dispatch = useDispatch();
-  const isLoading = useSelector(selectIsLoading);
+  const { isLoading } = useSelector(selectIsLoading);
   const { slug } = useParams();
 
   /**
    * @type {React.MouseEventHandler<HTMLButtonElement>}
    */
   const deleteComment = () => {
-    dispatch(removeComment({ articleSlug: slug, commentId }));
+    removeComment({ articleSlug: slug, commentId });
   };
 
   return (
@@ -63,7 +62,7 @@ function DeleteCommentButton({ commentId }) {
  * />
  */
 function Comment({ comment }) {
-  const isAuthor = useSelector(selectIsAuthor(comment.id));
+  const { isAuthor } = useSelector(selectIsAuthor(comment.id));
 
   return (
     <div className="card" data-testid="comment">
@@ -102,18 +101,13 @@ function Comment({ comment }) {
  * <CommentList />
  */
 function CommentList() {
-  const dispatch = useDispatch();
-  const comments = useSelector(selectAllComments);
-  const isLoading = useSelector(selectIsLoading);
+  const { comments, isLoading } = useSelector({
+    ...selectAllComments,
+    ...selectIsLoading,
+  });
   const { slug } = useParams();
 
-  useEffect(() => {
-    const fetchComments = dispatch(getCommentsForArticle(slug));
-
-    return () => {
-      fetchComments.abort();
-    };
-  }, [slug]);
+  useEffect(() => getCommentsForArticle(slug), [slug]);
 
   if (isLoading) {
     return <p>Loading comments</p>;

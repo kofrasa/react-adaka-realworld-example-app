@@ -1,94 +1,105 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-
 import agent from '../agent';
-import { articlePageUnloaded, createArticle, updateArticle } from './article';
-import { profilePageUnloaded } from './profile';
-import { homePageUnloaded } from './articleList';
-import {
-  getUser,
-  login,
-  logout,
-  register,
-  setToken,
-  updateUser,
-} from '../features/auth/authSlice';
+import { getUser, setToken } from '../features/auth/authSlice';
+import { update } from '../store';
 
-export const deleteArticle = createAsyncThunk(
-  'common/deleteArticle',
-  agent.Articles.del
-);
+export const redirectToHome = () => {
+  update({ $set: { redirectTo: '/' } });
+};
 
-export const appLoad = (token) => (dispatch) => {
-  dispatch(commonSlice.actions.loadApp());
+export const clearRedirect = () => {
+  update({ $unset: { redirectTo: '' } });
+};
 
+export const countViewChange = () => {
+  update({ $inc: { viewChangeCounter: 1 } });
+};
+
+// app actions
+export const appLoad = (token) => {
+  update({ $set: { appLoaded: true } });
   if (token) {
     agent.setToken(token);
-    dispatch(setToken(token));
-    return dispatch(getUser());
+    setToken(token);
+    getUser();
   }
 };
 
-const initialState = {
-  appName: 'Conduit',
-  appLoaded: false,
-  viewChangeCounter: 0,
-  redirectTo: undefined,
-};
+// export const deleteArticle = createAsyncThunk(
+//   'common/deleteArticle',
+//   agent.Articles.del
+// );
 
-const commonSlice = createSlice({
-  name: 'common',
-  initialState,
-  reducers: {
-    loadApp(state) {
-      state.appLoaded = true;
-    },
-    clearRedirect(state) {
-      delete state.redirectTo;
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(deleteArticle.fulfilled, (state) => {
-      state.redirectTo = '/';
-    });
+// export const appLoad = (token) => (dispatch) => {
+//   dispatch(commonSlice.actions.loadApp());
 
-    builder.addCase(updateUser.fulfilled, (state, action) => {
-      state.redirectTo = '/';
-    });
+//   if (token) {
+//     agent.setToken(token);
+//     dispatch(setToken(token));
+//     return dispatch(getUser());
+//   }
+// };
 
-    builder.addCase(login.fulfilled, (state, action) => {
-      state.redirectTo = '/';
-    });
+// const initialState = {
+//   appName: 'Conduit',
+//   appLoaded: false,
+//   viewChangeCounter: 0,
+//   redirectTo: undefined,
+// };
 
-    builder.addCase(register.fulfilled, (state, action) => {
-      state.redirectTo = '/';
-    });
+// const commonSlice = createSlice({
+//   name: 'common',
+//   initialState,
+//   reducers: {
+//     loadApp(state) {
+//       state.appLoaded = true;
+//     },
+//     clearRedirect(state) {
+//       delete state.redirectTo;
+//     },
+//   },
+//   extraReducers: (builder) => {
+//     builder.addCase(deleteArticle.fulfilled, (state) => {
+//       state.redirectTo = '/';
+//     });
 
-    builder.addCase(logout, (state) => {
-      state.redirectTo = '/';
-    });
+//     builder.addCase(updateUser.fulfilled, (state, action) => {
+//       state.redirectTo = '/';
+//     });
 
-    builder.addCase(createArticle.fulfilled, (state, action) => {
-      state.redirectTo = `/article/${action.payload.article.slug}`;
-    });
+//     builder.addCase(login.fulfilled, (state, action) => {
+//       state.redirectTo = '/';
+//     });
 
-    builder.addCase(updateArticle.fulfilled, (state, action) => {
-      state.redirectTo = `/article/${action.payload.article.slug}`;
-    });
+//     builder.addCase(register.fulfilled, (state, action) => {
+//       state.redirectTo = '/';
+//     });
 
-    builder.addMatcher(
-      (action) =>
-        [
-          articlePageUnloaded.type,
-          homePageUnloaded.type,
-          profilePageUnloaded.type,
-        ].includes(action.type),
-      (state) => {
-        state.viewChangeCounter++;
-      }
-    );
-  },
-});
+//     builder.addCase(logout, (state) => {
+//       state.redirectTo = '/';
+//     });
 
-export const { clearRedirect } = commonSlice.actions;
+//     builder.addCase(createArticle.fulfilled, (state, action) => {
+//       state.redirectTo = `/article/${action.payload.article.slug}`;
+//     });
 
-export default commonSlice.reducer;
+//     builder.addCase(updateArticle.fulfilled, (state, action) => {
+//       state.redirectTo = `/article/${action.payload.article.slug}`;
+//     });
+
+//     builder.addMatcher(
+//       (action) =>
+//         [
+//           articlePageUnloaded.type,
+//           homePageUnloaded.type,
+//           profilePageUnloaded.type,
+//         ].includes(action.type),
+//       (state) => {
+//         state.viewChangeCounter++;
+//       }
+//     );
+//   },
+// });
+
+// export const { clearRedirect } = commonSlice.actions;
+
+// export default commonSlice.reducer;

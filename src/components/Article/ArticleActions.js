@@ -1,8 +1,6 @@
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import React, { memo } from 'react';
-import { useDispatch } from 'react-redux';
-
-import { deleteArticle } from '../../reducers/common';
+import { deleteArticle } from '../../reducers/article';
 
 /**
  * Show the actions to edit or delete an article
@@ -12,14 +10,13 @@ import { deleteArticle } from '../../reducers/common';
  */
 function ArticleActions() {
   const { slug } = useParams();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   /**
    * @type {React.MouseEventHandler}
    */
   const removeArticle = () => {
-    dispatch(deleteArticle(slug));
+    deleteArticle(slug);
     navigate('/');
   };
 

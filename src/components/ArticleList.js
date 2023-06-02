@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
-import { useSelector } from 'react-redux';
 
 import ArticlePreview from './ArticlePreview';
 import ListPagination from './ListPagination';
+import { useSelector } from '../store';
 
 /**
  * List all articles and show pagination
@@ -11,7 +11,7 @@ import ListPagination from './ListPagination';
  * <ArticleList />
  */
 function ArticleList() {
-  const articles = useSelector((state) => state.articleList.articles);
+  const { articles } = useSelector({ articles: '$articleList.articles' });
 
   if (!articles) {
     return <div className="article-preview">Loading...</div>;

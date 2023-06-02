@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { getAllArticles } from '../reducers/articleList';
+import { useSelector } from '../store';
 
 /**
  * Show a list with the available pages
@@ -10,12 +10,11 @@ import { getAllArticles } from '../reducers/articleList';
  * <ListPagination />
  */
 function ListPagination() {
-  const dispatch = useDispatch();
-  const articlesCount = useSelector((state) => state.articleList.articlesCount);
-  const currentPage = useSelector((state) => state.articleList.currentPage);
-  const articlesPerPage = useSelector(
-    (state) => state.articleList.articlesPerPage
-  );
+  const { articlesCount, currentPage, articlesPerPage } = useSelector({
+    articlesCount: '$articleList.articlesCount',
+    currentPage: '$articleList.currentPage',
+    articlesPerPage: '$articleList.articlesPerPage',
+  });
 
   if (articlesCount <= articlesPerPage) {
     return null;
@@ -27,7 +26,7 @@ function ListPagination() {
   );
 
   const handleClickPage = (page) => () => {
-    dispatch(getAllArticles({ page }));
+    getAllArticles({ page });
   };
 
   return (

@@ -1,9 +1,12 @@
 import React, { memo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import ArticleList from '../ArticleList';
 import { changeTab } from '../../reducers/articleList';
 import { selectIsAuthenticated } from '../../features/auth/authSlice';
+import { useSelector } from '../../store';
+
+const selectCurrentTab = { currentTab: '$articleList.tab' };
+const selectTag = { tag: '$articleList.tag' };
 
 /**
  * Your feed tab
@@ -12,9 +15,10 @@ import { selectIsAuthenticated } from '../../features/auth/authSlice';
  * <YourFeedTab />
  */
 function YourFeedTab() {
-  const dispatch = useDispatch();
-  const isAuthenticated = useSelector(selectIsAuthenticated);
-  const currentTab = useSelector((state) => state.articleList.tab);
+  const { currentTab, isAuthenticated } = useSelector({
+    ...selectCurrentTab,
+    ...selectIsAuthenticated,
+  });
   const isActiveTab = currentTab === 'feed';
 
   if (!isAuthenticated) {
@@ -22,7 +26,7 @@ function YourFeedTab() {
   }
 
   const dispatchChangeTab = () => {
-    dispatch(changeTab('feed'));
+    changeTab('feed');
   };
 
   return (
@@ -45,8 +49,7 @@ function YourFeedTab() {
  * <GlobalFeedTab />
  */
 function GlobalFeedTab() {
-  const dispatch = useDispatch();
-  const currentTab = useSelector((state) => state.articleList.tab);
+  const { currentTab } = useSelector(selectCurrentTab);
   const isActiveTab = currentTab === 'all';
 
   /**
@@ -54,7 +57,7 @@ function GlobalFeedTab() {
    * @type{React.MouseEventHandler}
    */
   const dispatchChangeTab = () => {
-    dispatch(changeTab('all'));
+    changeTab('all');
   };
 
   return (
@@ -77,7 +80,7 @@ function GlobalFeedTab() {
  * <TagFilterTab />
  */
 function TagFilterTab() {
-  const tag = useSelector((state) => state.articleList.tag);
+  const { tag } = useSelector(selectTag);
 
   if (!tag) {
     return null;

@@ -1,8 +1,7 @@
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
 import { selectIsAuthenticated, selectUser } from '../features/auth/authSlice';
+import { useSelector } from '../store';
 
 /**
  * Navbar when there isn't a logged user
@@ -41,7 +40,7 @@ function LoggedOutNavbar() {
  * <LoggedInNavbar />
  */
 function LoggedInNavbar() {
-  const currentUser = useSelector(selectUser);
+  const { user: currentUser } = useSelector(selectUser);
 
   return (
     <ul className="nav navbar-nav pull-xs-right">
@@ -89,8 +88,10 @@ function LoggedInNavbar() {
  * <Header />
  */
 function Header() {
-  const isAuthenticated = useSelector(selectIsAuthenticated);
-  const appName = useSelector((state) => state.common.appName);
+  const { appName, isAuthenticated } = useSelector({
+    appName: 1,
+    ...selectIsAuthenticated,
+  });
 
   return (
     <nav className="navbar navbar-light">

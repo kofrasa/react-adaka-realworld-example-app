@@ -1,5 +1,4 @@
 import React, { useState, useEffect, memo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import ListErrors from './ListErrors';
 import {
@@ -17,8 +16,7 @@ import { useNavigate, useParams } from 'react-router';
  * <Editor />
  */
 function Editor({ match }) {
-  const dispatch = useDispatch();
-  const { article, errors, inProgress } = useSelector((state) => state.article);
+  const { article, errors, inProgress } = useSelector({ article: 1 }).article;
   const { slug } = useParams();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -110,20 +108,22 @@ function Editor({ match }) {
       tagList,
     };
 
-    dispatch(slug ? updateArticle(article) : createArticle(article));
+    if (slug) {
+      updateArticle(article);
+    } else {
+      createArticle(article);
+    }
     navigate('/');
   };
 
   useEffect(() => {
     reset();
-    if (slug) {
-      dispatch(getArticle(slug));
-    }
+    if (slug) getArticle(slug);
   }, [slug]);
 
   useEffect(reset, [article]);
 
-  useEffect(() => () => dispatch(articlePageUnloaded()), []);
+  useEffect(() => () => articlePageUnloaded(), []);
 
   return (
     <div className="editor-page">

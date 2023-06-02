@@ -1,11 +1,11 @@
 import React, { memo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 
 import ListErrors from '../../components/ListErrors';
 import { selectIsAuthenticated, selectUser } from '../auth/authSlice';
 import CommentList from './CommentList';
 import { createComment, selectErrors } from './commentsSlice';
+import { useSelector } from '../../store';
 
 /**
  * Add comment
@@ -14,8 +14,7 @@ import { createComment, selectErrors } from './commentsSlice';
  * <CommentForm />
  */
 function CommentForm() {
-  const dispatch = useDispatch();
-  const currentUser = useSelector(selectUser);
+  const { user: currentUser } = useSelector(selectUser);
   const { slug } = useParams();
   const [body, setBody] = useState('');
 
@@ -31,7 +30,7 @@ function CommentForm() {
    */
   const saveComment = (event) => {
     event.preventDefault();
-    dispatch(createComment({ articleSlug: slug, comment: { body } }));
+    createComment({ articleSlug: slug, comment: { body } });
     setBody('');
   };
 

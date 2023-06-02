@@ -1,6 +1,5 @@
 import React, { memo, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import ArticleList from './ArticleList';
 import {
   getArticlesByAuthor,
@@ -13,6 +12,7 @@ import {
   profilePageUnloaded,
 } from '../reducers/profile';
 import { selectUser } from '../features/auth/authSlice';
+import { useSelector } from '../store';
 
 /**
  * Go to profile settings
@@ -42,8 +42,7 @@ function EditProfileSettings() {
  */
 function FollowUserButton({ username, following }) {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const currentUser = useSelector(selectUser);
+  const { user: currentUser } = useSelector(selectUser);
   let classes = 'btn btn-sm action-btn';
   let textMessage;
 
@@ -62,9 +61,9 @@ function FollowUserButton({ username, following }) {
     }
 
     if (following) {
-      dispatch(unfollow(username));
+      unfollow(username);
     } else {
-      dispatch(follow(username));
+      follow(username);
     }
   };
 
@@ -93,7 +92,7 @@ function FollowUserButton({ username, following }) {
  * />
  */
 function UserInfo({ profile }) {
-  const currentUser = useSelector(selectUser);
+  const { user: currentUser } = useSelector(selectUser);
   const isCurrentUser = profile.username === currentUser?.username;
 
   return (
@@ -169,25 +168,22 @@ function ProfileTabs({ username, isFavorites }) {
  * <Profile />
  */
 function Profile({ location, isFavoritePage }) {
-  const dispatch = useDispatch();
-  const profile = useSelector((state) => state.profile);
+  const { profile } = useSelector({ profile: 1 });
   const { username } = useParams();
 
   useEffect(() => {
-    const fetchProfile = dispatch(getProfile(username));
-    const fetchArticles = dispatch(
-      isFavoritePage
-        ? getFavoriteArticles({ username })
-        : getArticlesByAuthor({ author: username })
-    );
+    const fetchProfileAbort = getProfile(username);
+    const fetchArticlesAbort = isFavoritePage
+      ? getFavoriteArticles({ username })
+      : getArticlesByAuthor({ author: username });
 
     return () => {
-      fetchProfile.abort();
-      fetchArticles.abort();
+      fetchProfileAbort();
+      fetchArticlesAbort();
     };
   }, [username, isFavoritePage]);
 
-  useEffect(() => () => dispatch(profilePageUnloaded()), []);
+  useEffect(() => () => profilePageUnloaded(), []);
 
   if (!profile) {
     return null;

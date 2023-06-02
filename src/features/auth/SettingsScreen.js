@@ -1,5 +1,4 @@
 import React, { memo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
 import ListErrors from '../../components/ListErrors';
@@ -38,7 +37,8 @@ function SettingsForm({ currentUser, onSaveSettings }) {
   const [bio, setBio] = useState(currentUser?.bio ?? '');
   const [email, setEmail] = useState(currentUser?.email ?? '');
   const [password, setPassword] = useState('');
-  const isLoading = useSelector(selectIsLoading);
+
+  const { isLoading } = useSelector(selectIsLoading);
 
   /**
    * @type {React.ChangeEventHandler<HTMLInputElement>}
@@ -170,17 +170,22 @@ function SettingsForm({ currentUser, onSaveSettings }) {
  * <SettingsScreen />
  */
 function SettingsScreen() {
-  const dispatch = useDispatch();
-  const currentUser = useSelector(selectUser);
-  const errors = useSelector(selectErrors);
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const {
+    isAuthenticated,
+    errors,
+    user: currentUser,
+  } = useSelector({
+    ...selectUser,
+    ...selectErrors,
+    ...selectIsAuthenticated,
+  });
 
   const saveSettings = (user) => {
-    void dispatch(updateUser(user));
+    updateUser(user);
   };
 
   const logoutUser = () => {
-    dispatch(logout());
+    logout();
   };
 
   if (!isAuthenticated) {

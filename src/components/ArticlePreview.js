@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { favoriteArticle, unfavoriteArticle } from '../reducers/articleList';
 import TagsList from '../features/tags/TagsList';
@@ -35,7 +34,6 @@ const NOT_FAVORITED_CLASS = 'btn btn-sm btn-outline-primary';
  * />
  */
 function ArticlePreview({ article }) {
-  const dispatch = useDispatch();
   const favoriteButtonClass = article.favorited
     ? FAVORITED_CLASS
     : NOT_FAVORITED_CLASS;
@@ -44,9 +42,9 @@ function ArticlePreview({ article }) {
     event.preventDefault();
 
     if (article.favorited) {
-      dispatch(unfavoriteArticle(article.slug));
+      unfavoriteArticle(article.slug);
     } else {
-      dispatch(favoriteArticle(article.slug));
+      favoriteArticle(article.slug);
     }
   };
 

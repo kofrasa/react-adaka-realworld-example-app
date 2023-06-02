@@ -1,36 +1,56 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-
 import agent from '../agent';
+import { update } from '../store';
+import { countViewChange } from './common';
 
-export const getProfile = createAsyncThunk(
-  'profile/getProfile',
-  agent.Profile.get
-);
+export const profilePageUnloaded = () => {
+  countViewChange();
+};
 
-export const follow = createAsyncThunk('profile/follow', agent.Profile.follow);
+export const follow = (username) => {
+  return agent.cancellable(() => agent.Profile.follow(username), onSuccess);
+};
 
-export const unfollow = createAsyncThunk(
-  'profile/unfollow',
-  agent.Profile.unfollow
-);
+export const unfollow = (username) => {
+  return agent.cancellable(() => agent.Profile.unfollow(username), onSuccess);
+};
 
-const profileSlice = createSlice({
-  name: 'profile',
-  initialState: {},
-  reducers: {
-    profilePageUnloaded: () => ({}),
-  },
-  extraReducers: (builder) => {
-    const successCaseReducer = (_, action) => ({
-      ...action.payload.profile,
-    });
+export const getProfile = (username) => {
+  return agent.cancellable(() => agent.Profile.get(username), onSuccess);
+};
 
-    builder.addCase(getProfile.fulfilled, successCaseReducer);
-    builder.addCase(follow.fulfilled, successCaseReducer);
-    builder.addCase(unfollow.fulfilled, successCaseReducer);
-  },
-});
+function onSuccess({ profile }) {
+  update({ $set: { profile } });
+}
 
-export const { profilePageUnloaded } = profileSlice.actions;
+// export const getProfile = createAsyncThunk(
+//   'profile/getProfile',
+//   agent.Profile.get
+// );
 
-export default profileSlice.reducer;
+// export const follow = createAsyncThunk('profile/follow', agent.Profile.follow);
+
+// export const unfollow = createAsyncThunk(
+//   'profile/unfollow',
+//   agent.Profile.unfollow
+// );
+
+// const profileSlice = createSlice({
+//   name: 'profile',
+//   initialState: {},
+//   reducers: {
+//     profilePageUnloaded: () => ({}),
+//   },
+//   extraReducers: (builder) => {
+//     const successCaseReducer = (_, action) => ({
+//       ...action.payload.profile,
+//     });
+
+//     builder.addCase(getProfile.fulfilled, successCaseReducer);
+//     builder.addCase(follow.fulfilled, successCaseReducer);
+//     builder.addCase(unfollow.fulfilled, successCaseReducer);
+//   },
+// });
+
+// export const { profilePageUnloaded } = profileSlice.actions;
+
+// export default profileSlice.reducer;

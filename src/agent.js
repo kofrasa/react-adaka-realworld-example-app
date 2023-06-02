@@ -21,6 +21,21 @@ function serialize(object) {
 
 let token = null;
 
+const controllers = [];
+const noop = () => {
+  return;
+};
+
+function cancellable(asyncTask, onSuccess, onFailed, onComplete) {
+  asyncTask()
+    .then(onSuccess || noop)
+    .catch(onFailed || noop)
+    .finally(onComplete || noop);
+  const cntl = controllers.pop();
+  return () => {
+    if (cntl) cntl.abort();
+  };
+}
 /**
  *
  * @typedef {Object} ApiError
@@ -93,6 +108,10 @@ let token = null;
  * @returns {Promise<Object>} API response's body
  */
 const agent = async (url, body, method = 'GET') => {
+  // add abort signal
+  const controller = new AbortController();
+  controllers.push(controller);
+
   const headers = new Headers();
 
   if (body) {
@@ -107,6 +126,7 @@ const agent = async (url, body, method = 'GET') => {
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,
+    signal: controller.signal,
   });
   let result;
 
@@ -375,4 +395,5 @@ export default {
   setToken: (_token) => {
     token = _token;
   },
+  cancellable,
 };

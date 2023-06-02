@@ -1,5 +1,4 @@
 import React, { lazy, memo, Suspense, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import snarkdown from 'snarkdown';
 import xss from 'xss';
@@ -7,6 +6,7 @@ import xss from 'xss';
 import TagsList from '../../features/tags/TagsList';
 import { articlePageUnloaded, getArticle } from '../../reducers/article';
 import ArticleMeta from './ArticleMeta';
+import { useSelector } from '../../store';
 
 const CommentSection = lazy(() =>
   import(
@@ -22,20 +22,16 @@ const CommentSection = lazy(() =>
  * <Article />
  */
 function Article({ match }) {
-  const dispatch = useDispatch();
-  const article = useSelector((state) => state.article.article);
-  const inProgress = useSelector((state) => state.article.inProgress);
+  const { article, inProgress } = useSelector({
+    article: '$article.article',
+    inProgress: '$article.inProgress',
+  });
   const { slug } = useParams();
   const renderMarkdown = () => ({ __html: xss(snarkdown(article.body)) });
 
-  useEffect(() => {
-    const fetchArticle = dispatch(getArticle(slug));
-    return () => {
-      fetchArticle.abort();
-    };
-  }, [match]);
+  useEffect(() => getArticle(slug), [match]);
 
-  useEffect(() => () => dispatch(articlePageUnloaded()), []);
+  useEffect(() => () => articlePageUnloaded(), []);
 
   if (!article) {
     return (
