@@ -1,5 +1,5 @@
 {
-  "name": "react-redux-realworld-example-app",
+  "name": "react-adaka-realworld-example-app",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -24,10 +24,9 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
-    "adaka": "file:../adaka",
+    "adaka": "0.0.0",
     "history": "^5.3.0",
     "marked": "^5.0.2",
-    "mingo": "6.3.4",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

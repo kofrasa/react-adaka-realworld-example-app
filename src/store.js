@@ -1,5 +1,5 @@
-import { createStore } from 'adaka/build/';
-import { createSelectorHook } from 'adaka/build/react';
+import { createStore } from 'adaka';
+import { createSelectorHook } from 'adaka/react';
 import { Status } from './common/utils';
 
 // initial states

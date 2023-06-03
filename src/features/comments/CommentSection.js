@@ -70,8 +70,10 @@ function CommentForm() {
  * <CommentSection />
  */
 function CommentSection() {
-  const isAuthenticaded = useSelector(selectIsAuthenticated);
-  const errors = useSelector(selectErrors);
+  const { isAuthenticaded, errors } = useSelector({
+    ...selectIsAuthenticated,
+    ...selectErrors,
+  });
 
   return (
     <div className="row">
