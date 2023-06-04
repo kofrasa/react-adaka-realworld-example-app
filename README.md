@@ -1,6 +1,6 @@
 # ![React + Adaka Example App](project-logo.png)
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/aa569c8f-ebd5-413e-9fb2-e34facc71873/deploy-status)](https://app.netlify.com/sites/react-adaka-realworld/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/bbe3b496-fdbb-475a-be4d-fb05dcf69c21/deploy-status)](https://app.netlify.com/sites/react-adaka-realworld/deploys)
 [![RealWorld Frontend](https://img.shields.io/badge/realworld-frontend-%23783578.svg)](http://realworld.io)
 
 > ### React + Adaka codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) spec and API.
