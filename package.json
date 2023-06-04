@@ -25,6 +25,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
     "adaka": "0.0.0",
+    "react-adaka": "0.0.0",
     "history": "^5.3.0",
     "marked": "^5.0.2",
     "prop-types": "^15.8.1",
