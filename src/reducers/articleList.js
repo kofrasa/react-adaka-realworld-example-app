@@ -13,7 +13,7 @@ export const homePageUnloaded = () => {
 };
 
 export const getAllArticles = ({ page, author, tag, favorited } = {}) => {
-  const { articleList } = select({ articleList: 1 }).get();
+  const { articleList } = select({ articleList: 1 });
 
   return agent.cancellable(
     () => {

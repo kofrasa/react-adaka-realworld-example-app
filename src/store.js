@@ -60,4 +60,4 @@ export const update = (expr, arrayFilters, condition) =>
   store.update(expr, arrayFilters, condition);
 
 export const select = (projection, condition) =>
-  store.select(projection, condition);
+  store.select(projection, condition).get();

@@ -18,7 +18,7 @@ export const selectIsAuthor = (commentId) => {
     index: {
       $indexOfArray: ['$comments.comments.id', commentId],
     },
-  }).get();
+  });
 
   // get the comment author if we found the comment.
   const commentAuthor =
@@ -64,7 +64,7 @@ export const createComment = ({ articleSlug, comment: newComment }) => {
     ...selectIsAuthenticated,
     ...selectIsLoading,
     ...selectUser,
-  }).get();
+  });
 
   if (isAuthenticated && !isLoading && newComment.body) {
     // set status to loading
@@ -153,7 +153,7 @@ export const removeComment = ({ articleSlug, commentId }) => {
 export const getCommentsForArticle = (articleSlug) => {
   return agent.cancellable(
     () => {
-      const { isLoading } = select(selectIsLoading).get();
+      const { isLoading } = select(selectIsLoading);
       if (isLoading) return Promise.reject();
       update({ $set: { 'comments.status': Status.LOADING } });
       return agent.Comments.forArticle(articleSlug);
