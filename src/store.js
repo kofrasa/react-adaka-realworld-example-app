@@ -1,4 +1,6 @@
 import { createStore, createSelectorHook } from 'react-adaka';
+import { Context, initOptions } from 'mingo/core';
+import { $allElementsTrue } from 'mingo/operators/expression/set';
 import { Status } from './common/utils';
 
 // initial states
@@ -49,7 +51,16 @@ const app = {
 
 // store
 // -----
-const store = createStore({ ...initialStates, ...app });
+const store = createStore(
+  { ...initialStates, ...app },
+  {
+    queryOptions: initOptions({
+      context: Context.init({
+        expression: { $allElementsTrue },
+      }),
+    }),
+  }
+);
 
 // selector hook - only need a single one
 // --------------------------------
