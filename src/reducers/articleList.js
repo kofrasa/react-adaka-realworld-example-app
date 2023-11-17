@@ -13,10 +13,9 @@ export const homePageUnloaded = () => {
 };
 
 export const getAllArticles = ({ page, author, tag, favorited } = {}) => {
-  const { articleList } = select({ articleList: 1 });
-
   return agent.cancellable(
     () => {
+      const { articleList } = select({ articleList: 1 });
       return articleList.tab === 'feed'
         ? agent.Articles.feed(page)
         : agent.Articles.all({
